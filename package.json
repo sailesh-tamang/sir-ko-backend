@@ -8,6 +8,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon --exec ts-node src/index.ts",
+    "test:mongo": "ts-node src/scripts/test-mongo-connection.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

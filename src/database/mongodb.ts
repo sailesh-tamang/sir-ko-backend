@@ -10,8 +10,13 @@ export async function connectDatabase() {
     } catch (error: any) {
         console.error("Database Error:", error);
 
-        // If local MongoDB is not available, fall back to an in-memory server (development)
-        if (error.message && error.message.includes("ECONNREFUSED")) {
+        // In development, allow falling back to an in-memory MongoDB when connection fails
+        const isDev = process.env.NODE_ENV !== "production";
+        const msg = (error && (error.message || "")) as string;
+        const isConnRefused = msg.includes("ECONNREFUSED");
+        const isAuthError = msg.toLowerCase().includes("auth") || msg.toLowerCase().includes("authentication") || msg.toLowerCase().includes("bad auth") || (error.codeName === "AtlasError");
+
+        if (isDev && (isConnRefused || isAuthError)) {
             console.log("Falling back to in-memory MongoDB for development...");
             try {
                 const mongod = await MongoMemoryServer.create();

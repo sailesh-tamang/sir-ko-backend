@@ -26,6 +26,11 @@ export class UserService {
 
     const userObj = (newUser as any).toObject ? (newUser as any).toObject() : newUser;
     delete (userObj as any).password;
+    // Ensure a stable `id` string is present (map MongoDB `_id`)
+    if ((userObj as any)._id) {
+      (userObj as any).id = String((userObj as any)._id);
+      delete (userObj as any)._id;
+    }
 
     return userObj;
   }
@@ -56,6 +61,12 @@ export class UserService {
 
     const userObj = (user as any).toObject ? (user as any).toObject() : user;
     delete (userObj as any).password;
+
+    // Add `id` field for the returned user object
+    if ((userObj as any)._id) {
+      (userObj as any).id = String((userObj as any)._id);
+      delete (userObj as any)._id;
+    }
 
     return { token, user: userObj };
   }
